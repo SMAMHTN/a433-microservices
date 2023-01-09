@@ -1,0 +1,60 @@
+#  use api v1
+apiVersion: apps/v1
+# kind yang digunakan statefuleset
+kind: StatefulSet
+#Set name & Labels
+metadata:
+  name: mongo
+  labels:
+    app: mongo
+spec:
+  #Replicas set to 1
+  replicas: 1
+  #set mongo backend
+  selector:
+    matchLabels:
+      app: mongo
+      tier: backend
+  serviceName: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+        tier: backend
+    spec:
+      containers:
+      #get image
+        - image: mongo:4.4.3
+          name: mongo
+          #init username and pass
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME_FILE
+              value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+              value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+          #Set ports
+          ports:
+            - containerPort: 27017
+              name: mongo
+          #Set volume mounts
+          volumeMounts:
+            - name: mongo-persistent-storage
+              mountPath: /data/db
+            - name: mongo-config-map
+              mountPath: /config
+            - name: mongo-credentials
+              mountPath: /etc/mongo-credentials     
+      #Set volumes
+      volumes:
+        - name: mongo-persistent-storage
+          persistentVolumeClaim:
+            claimName: mongo-pv-claim
+        - name: mongo-config-map
+          configMap:
+            name: mongo-config
+            items: 
+              - key: mongo.conf
+                path: mongo.conf
+        - name: mongo-credentials
+          secret:
+            secretName: mongo-credentials

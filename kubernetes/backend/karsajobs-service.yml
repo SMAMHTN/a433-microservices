@@ -1,0 +1,16 @@
+#User Apiversion 1
+apiVersion: v1
+#Object type service
+kind: Service
+#Set name & Labels
+metadata:
+  name: karsajobs
+  labels:
+    app: karsajobs
+#Type nodeport for karsajobs
+spec:
+  type: NodePort
+  selector:
+    app: karsajobs 
+  ports:
+  - port: 8080

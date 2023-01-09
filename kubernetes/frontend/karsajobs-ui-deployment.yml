@@ -1,0 +1,32 @@
+#Use API Version 1
+apiVersion: apps/v1
+#Object type deployment
+kind: Deployment
+metadata:
+  #Set name
+  name: karsajobs-ui
+  #Set labels 
+  labels:
+    app: karsajobs-ui
+spec:
+  #Set replicas frontend
+  replicas: 2
+  #Set karsajobs-ui
+  selector:
+    matchLabels: 
+      app: karsajobs-ui
+  template:
+    metadata:
+      labels:
+        app: karsajobs-ui
+    spec:
+      #Get Images from docker hub
+      containers:
+        - name: karsajobs-ui
+          image: smamhtn/karsajobs-ui:latest
+          #Set port
+          ports:
+            - containerPort: 8000 
+          env:
+            - name: VUE_APP_BACKEND
+              value: http://10.102.168.148:32027
