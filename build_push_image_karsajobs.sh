@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#build image docker dengan nama item-app & tag v1
+#build image docker dengan nama karsajobs & tag latest
 docker build -t karsajobs:latest .
 #to make it tidier, pemisah
 echo "\n"
